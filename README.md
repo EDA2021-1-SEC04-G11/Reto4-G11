@@ -4,6 +4,7 @@
 Req. 2 - Lina Maria Gomez, 201923531, l.gomez1@uniandes.edu.co
 #
 Req. 3 - Juan montealegre, 202012723, j.montealegres@uniandes.edu.co
+#
 
 Este proyecto contiene los Tipos abstractos de datos, estructuras de datos y algoritmos requeridos por el curso ISIS1225-Estructuras de Datos y Algoritmos
 
