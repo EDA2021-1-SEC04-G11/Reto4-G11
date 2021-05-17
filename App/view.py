@@ -20,11 +20,12 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-import config as cf
 import sys
-import controller
-from DISClib.ADT import list as lt
-assert cf
+import config
+import threading
+from App import controller
+from DISClib.ADT import stack
+assert config
 
 
 """
@@ -37,10 +38,30 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
-
+    print("2- Req 1: Identificar los clústers de información ")
+    print("3- Req 2: Identificar puntos de conexión críticos de la red")
+    print("4- Req 3: La ruta de menor distancia")
+    print("5- Req 4: Identificar la infraestructura crítica de la red")
+    print("6- Req 5: Análisis de fallas")
+    print("7- Req 6: Los mejores canales para transmitir")
+    print("8- Req 7: La mejor ruta de comunicaciones")
+    print("8- Req 8: Graficando los grafos")
+    
+    
 catalog = None
 
+
+def initCatalog():
+    """
+    Inicializa el catalogo de videos
+    """
+    return controller.init()
+
+def loadData(catalog):
+    """
+    Carga los videos en la estructura de datos
+    """
+    controller.loadData(catalog)
 """
 Menu principal
 """
@@ -49,10 +70,31 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+       
+        cont = controller.init()
+        answer = controller.loadData(cont)
+        print("Total de landing points:")
+        print("Total de conexiones entre landing-points")
+        print("Total de paises:")
+        numvertex = controller.totalStops(cont)
+        numedges = controller.totalConnections(cont)
+        print(numedges)
+        print(numvertex)
 
     elif int(inputs[0]) == 2:
         pass
-
+    elif int(inputs[0]) == 3:
+        pass
+    elif int(inputs[0]) == 4:
+        pass
+    elif int(inputs[0]) == 5:
+        pass
+    elif int(inputs[0]) == 6:
+        pass
+    elif int(inputs[0]) == 7:
+        pass
+    elif int(inputs[0]) == 8:
+        pass
     else:
         sys.exit(0)
 sys.exit(0)
