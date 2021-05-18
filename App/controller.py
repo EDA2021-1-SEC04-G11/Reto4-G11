@@ -67,13 +67,14 @@ def loadServices(analyzer):
     servicesfile = cf.data_dir + servicesfile
     input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
                                 delimiter=",")
-    origin = None
+  
     for service in input_file:
-        if origin is not None:
-           
-           
-            model.addStopConnection(analyzer, origin, service)
-        lastservice = service
+        service["origin"]=service.pop('\ufefforigin')
+      
+        model.cargar_grafos(analyzer, service)
+
+
+        
     
     return analyzer
 

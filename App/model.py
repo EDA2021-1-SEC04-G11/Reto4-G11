@@ -66,74 +66,21 @@ def newAnalyzer():
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
 
+def cargar_grafos(analyzer, service):
+    
+  
+    if not (gr.containsVertex(analyzer["connections"],service["origin"])):
+        gr.insertVertex(analyzer["connections"],service["origin"])
+    if not (gr.containsVertex(analyzer["connections"],service["destination"])):
+        gr.insertVertex(analyzer["connections"],service["destination"])
+    gr.addEdge(analyzer["connections"],service["origin"],service["destination"],service["cable_length"])
+
+    
+
+
+
+
 # Construccion de modelos
-def addStopConnection(analyzer, origin, service):
-    """
-    Adiciona las estaciones al grafo como vertices y arcos entre las
-    estaciones adyacentes.
-
-    Los vertices tienen por nombre el identificador de la estacion
-    seguido de la ruta que sirve.  Por ejemplo:
-
-    75009-10
-
-    Si la estacion sirve otra ruta, se tiene: 75009-101
-    """
-    try:
-        origin = formatVertex(origin)
-        destination = formatVertex(service)
-        cleanServiceDistance(origin, service)
-        distance = float(service['cable_length']) - float(origin['cable_length'])
-        distance = abs(distance)
-        addStop(analyzer, origin)
-        addStop(analyzer, destination)
-        addConnection(analyzer, origin, destination, distance)
-        addRouteStop(analyzer, service)
-        addRouteStop(analyzer, origin)
-        
-        return analyzer
-    except Exception as exp:
-        error.reraise(exp, 'model:addStopConnection')
-
-
-def addRouteStop(analyzer, service):
-    """
-    Agrega a una estacion, una ruta que es servida en ese paradero
-    """
-    entry = m.get(analyzer['landing'], service['origin'])
-    if entry is None:
-        lstroutes = lt.newList(cmpfunction=compareroutes)
-        lt.addLast(lstroutes, service['ServiceNo'])
-        m.put(analyzer['landing'], service['BusStopCode'], lstroutes)
-    else:
-        lstroutes = entry['value']
-        info = service['ServiceNo']
-        if not lt.isPresent(lstroutes, info):
-            lt.addLast(lstroutes, info)
-    return analyzer
-
-def addStop(analyzer, stopid):
-    """
-    Adiciona una estación como un vertice del grafo
-    """
-    try:
-        if not gr.containsVertex(analyzer['connections'], stopid):
-            gr.insertVertex(analyzer['connections'], stopid)
-        return analyzer
-    except Exception as exp:
-        error.reraise(exp, 'model:addstop')
-
-
-
-            
-def addConnection(analyzer, origin, destination, distance):
-    """
-    Adiciona un arco entre dos estaciones
-    """
-    edge = gr.getEdge(analyzer['connections'], origin, destination)
-    if edge is None:
-        gr.addEdge(analyzer['connections'], origin, destination, distance)
-    return analyzer
 
 def totalStops(analyzer):
     """
