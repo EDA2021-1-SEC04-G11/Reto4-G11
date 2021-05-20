@@ -37,22 +37,14 @@ def init():
     analyzer = model.newAnalyzer()
     return analyzer
 
-def conv(value):
-    try:
-        value=float(value)
-    except ValueError:
-        pass    
-    return value
-
-
 def loadData(analyzer):
     """
     Carga los datos de los archivos CSV en el modelo
     """
     loadServices(analyzer)
+    loadcountry(analyzer)
+    loadLP(analyzer)
     
-
-
 
 def loadServices(analyzer):
     """
@@ -65,18 +57,62 @@ def loadServices(analyzer):
     """
     servicesfile = 'connections.csv'
     servicesfile = cf.data_dir + servicesfile
-    input_file = csv.DictReader(open(servicesfile, encoding="utf-8-sig"),
+    input_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
                                 delimiter=",")
   
     for service in input_file:
-      
-      
-        model.cargar_grafos(analyzer, service)
-
-
         
+        service["origin"]=service.pop('\ufefforigin')
+        service["cable_length"] = service["cable_length"].replace(" km","")
+        
+        if service['cable_length'] == 'n.a.':
+            service['cable_length'] = 0
     
+        model.cargar_grafos(analyzer, service)
+    
+    model.addRouteConnections(analyzer)
+
     return analyzer
+
+def loadLP(analyzer):
+    """
+    Carga los datos de los archivos CSV en el modelo.
+    Se crea un arco entre cada par de estaciones que
+    pertenecen al mismo servicio y van en el mismo sentido.
+
+    addRouteConnection crea conexiones entre diferentes rutas
+    servidas en una misma estación.
+    """
+    lpfile = 'landing_points.csv'
+    lpfile = cf.data_dir + lpfile
+    input_file = csv.DictReader(open(lpfile, encoding="utf-8"),
+                                delimiter=",")
+    
+    servicesfile = 'connections.csv'
+    servicesfile = cf.data_dir + servicesfile
+    in_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
+                                delimiter=",")
+  
+    for service in input_file:
+        model.add_landingPoint(analyzer,service)
+def loadcountry(analyzer):
+    """
+    Carga los datos de los archivos CSV en el modelo.
+    Se crea un arco entre cada par de estaciones que
+    pertenecen al mismo servicio y van en el mismo sentido.
+
+    addRouteConnection crea conexiones entre diferentes rutas
+    servidas en una misma estación.
+    """
+    country_file = 'countries.csv'
+    country_file = cf.data_dir + country_file
+    input_file = csv.DictReader(open(country_file, encoding="utf-8"),
+                                delimiter=",")
+  
+    for service in input_file:
+        model.add_country(analyzer,service)
+        
+
 
 def totalStops(analyzer):
     """
@@ -98,3 +134,14 @@ def totalConnections(analyzer):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def countrySize(analyzer):
+    """
+    Número de libros en el catago
+    """
+    return model.countrySize(analyzer)
+
+def last_country(analyzer):
+    return model.last_country(analyzer)
+
+def first_lp(analyzer):
+    return model.first_lp(analyzer)

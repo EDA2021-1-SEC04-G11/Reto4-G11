@@ -25,6 +25,7 @@ import config
 import threading
 from App import controller
 from DISClib.ADT import stack
+from DISClib.ADT import list as lt
 assert config
 
 
@@ -73,14 +74,18 @@ while True:
        
         cont = controller.init()
         answer = controller.loadData(cont)
-        print("Total de landing points:")
-        print("Total de conexiones entre landing-points")
-        print("Total de paises:")
+        
         numvertex = controller.totalStops(cont)
         numedges = controller.totalConnections(cont)
-        print("Numeros de arcos: " +str(numedges))
-        print("Numeros de vertices: " +str(numvertex))
-
+        last_ct = controller.last_country(cont)
+        first_ct = controller.first_lp(cont)
+        
+        print("Total de landing points:", numvertex)
+        print("Total de conexiones entre landing-points", numedges)
+        print("Total de paises:", str(controller.countrySize(cont)))
+        print("ÚLTIMO PAÍS EN CARGAR...\n",last_ct)
+        print("PRIMER LANDING POINT CARGADO:\n",first_ct)
+        
 
     elif int(inputs[0]) == 2:
         pass
@@ -99,3 +104,9 @@ while True:
     else:
         sys.exit(0)
 sys.exit(0)
+
+if __name__ == "__main__":
+    threading.stack_size(67108864)  # 64MB stack
+    sys.setrecursionlimit(2 ** 20)
+    thread = threading.Thread(target=thread_cycle)
+    thread.start()

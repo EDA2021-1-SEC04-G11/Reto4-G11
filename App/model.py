@@ -26,9 +26,12 @@
 
 
 import config
+import sys
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
+from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
+from DISClib.Algorithms.Sorting import mergesort as mt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
@@ -38,7 +41,10 @@ assert config
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
-
+sys.setrecursionlimit(2 ** 20)
+# -----------------------------------------------------
+# API del TAD Analyzer
+# -----------------------------------------------------
 def newAnalyzer():
     """ Inicializa el analizador
 
@@ -52,80 +58,152 @@ def newAnalyzer():
         analyzer = {
                     'landing': None,
                     'connections': None,
-                    
+                    'countries':None,
+                    "lp": None
                     }
 
+        analyzer['lp'] = m.newMap(numelements=14000,maptype='PROBING')
+
         analyzer['landing'] = m.newMap(numelements=14000,
+                                     maptype='PROBING')
+        analyzer['countries'] = m.newMap(numelements=500,
                                      maptype='PROBING')
 
         analyzer['connections'] = gr.newGraph(datastructure='ADJ_LIST',
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareStopIds)
-
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
 
+# ==============================
+# Funciones para Cargar 
+# ==============================
+
 def cargar_grafos(analyzer, service):
     
-    origin=(service["origin"]) + "-" + (service["cable_id"])
-    if not (gr.containsVertex(analyzer["connections"],origin)):
-        gr.insertVertex(analyzer["connections"],origin)
-    if not (gr.containsVertex(analyzer["connections"],service["destination"])):
-        gr.insertVertex(analyzer["connections"],service["destination"])
-    gr.addEdge(analyzer["connections"],origin,service["destination"],service["cable_length"])
+    origin_id = formatVertexorigin(service)
+    destination_id = formatVertexdestination(service)
+    arc = (service["cable_length"],service["capacityTBPS"])
 
+    if not (gr.containsVertex(analyzer["connections"],origin_id)):
+        gr.insertVertex(analyzer["connections"],origin_id)
+    if not (gr.containsVertex(analyzer["connections"],destination_id)):
+        gr.insertVertex(analyzer["connections"],destination_id)
+    gr.addEdge(analyzer["connections"],origin_id,destination_id,arc)
+    
+    add_lp(analyzer,service["cable_id"],origin_id)
+    add_lp(analyzer,service["cable_id"], destination_id)
     
 
+def add_country(analyzer,service):
     
+    artist_n=service["CountryName"].strip()
 
+    artist = analyzer['countries']
+    moj= m.contains(artist,artist_n)
+    if moj:
+        valoactual = m.get(artist,artist_n) 
+        valor = me.getValue(valoactual)
+    else:
+        m.put(artist,artist_n,lt.newList("ARRAY_LIST"))
+        pays = m.get(artist,artist_n)
+        valor= me.getValue(pays)
+    
+    lt.addLast(valor,service)
 
+def add_landingPoint(analyzer,service):
+    
+    artist_n=service["landing_point_id"].strip()
 
+    artist = analyzer['landing']
+    moj= m.contains(artist,artist_n)
+    if moj:
+        valoactual = m.get(artist,artist_n) 
+        valor = me.getValue(valoactual)
+    else:
+        m.put(artist,artist_n,lt.newList("ARRAY_LIST"))
+        pays = m.get(artist,artist_n)
+        valor= me.getValue(pays)
+    
+    lt.addLast(valor,service)
 
-# Construccion de modelos
+def add_lp(analyzer,service,lp_n):
+    
+    entry = m.get(analyzer['lp'], lp_n)
+    if entry is None:
+        lstroutes = lt.newList("ARRAY_LIST")
+        lt.addLast(lstroutes, service)
+        m.put(analyzer['lp'], lp_n, lstroutes)
+    else:
+        lstroutes = entry['value']
+        info = service
+        
+        if not lt.isPresent(lstroutes, info):
+            lt.addLast(lstroutes, info)
+    
+    return analyzer
 
-def totalStops(analyzer):
+def addRouteConnections(analyzer):
     """
-    Retorna el total de estaciones (vertices) del grafo
+    Por cada vertice (cada estacion) se recorre la lista
+    de rutas servidas en dicha estación y se crean
+    arcos entre ellas para representar el cambio de ruta
+    que se puede realizar en una estación.
     """
-    return gr.numVertices(analyzer['connections'])
-
-def totalConnections(analyzer):
-    """
-    Retorna el total arcos del grafo
-    """
-    return gr.numEdges(analyzer['connections'])
-
-
-# Funciones para agregar informacion al catalogo
-
-# Funciones para creacion de datos
-
+    lststops = m.keySet(analyzer['lp'])
+    
+    for key in lt.iterator(lststops):
+        
+        lstroutes = m.get(analyzer['lp'], key)['value']
+        
+        for x in range(1,lt.size(lstroutes)):
+            
+            prevrout = lt.getElement(lstroutes, x)
+            route = lt.getElement(lstroutes, x+1)
+        
+            if prevrout is not None:
+                addConnection(analyzer, prevrout, route, 0.1)
+                addConnection(analyzer, route, prevrout, 0.1)
+            prevrout = route 
+    
 # Funciones de consulta
+        
+# ==============================
+# Funciones de formato 
+# ==============================
 
-# Funciones utilizadas para comparar elementos dentro de una lista
-
-# Funciones de ordenamiento
-def formatVertex(service):
+def formatVertexorigin(service):
     """
     Se formatea el nombrer del vertice con el id de la estación
     seguido de la ruta.
     """
-    name = service['origin'] + '-'
-    name = name + service['cable_name']
+    name = service['origin'] + ';'
+    name = name + service['cable_id']
     return name
 
-def cleanServiceDistance(lastservice, service):
+def formatVertexdestination(service):
     """
-    En caso de que el archivo tenga un espacio en la
-    distancia, se reemplaza con cero.
+    Se formatea el nombrer del vertice con el id de la estación
+    seguido de la ruta.
     """
-    if service['Distance'] == '':
-        service['Distance'] = 0
-    if lastservice['Distance'] == '':
-        lastservice['Distance'] = 0
-        
+    name = service['destination'] + ';'
+    name = name + service['cable_id']
+    return name
+
+def addConnection(analyzer, origin, destination, distance):
+    """
+    Adiciona un arco entre dos estaciones
+    """
+    edge = gr.getEdge(analyzer['connections'], origin, destination)
+    if edge is None:
+        gr.addEdge(analyzer['connections'], origin, destination, distance)
+    return analyzer
+
+# ==============================
+# Funciones de Comparacion
+# ==============================
 def compareStopIds(stop, keyvaluestop):
     """
     Compara dos estaciones
@@ -148,3 +226,39 @@ def compareroutes(route1, route2):
         return 1
     else:
         return -1
+
+# ==============================
+# Funciones de impresión 
+# ==============================
+
+def last_country(analyzer):
+    keys = m.keySet(analyzer["countries"])
+    key = lt.lastElement(keys)
+    ult = m.get(analyzer["countries"],key)
+    answer= ult["value"]["elements"][0]
+    return answer
+
+def first_lp(analyzer):
+    keys = m.keySet(analyzer["landing"])
+    key = lt.firstElement(keys)
+    ult = m.get(analyzer["landing"],key)
+    answer= ult["value"]["elements"][0]
+    return answer
+
+def countrySize(analyzer):
+    """
+    Número de libros en el catago
+    """
+    return m.size(analyzer['countries'])
+
+def totalStops(analyzer):
+    """
+    Retorna el total de estaciones (vertices) del grafo
+    """
+    return gr.numVertices(analyzer['connections'])
+
+def totalConnections(analyzer):
+    """
+    Retorna el total arcos del grafo
+    """
+    return gr.numEdges(analyzer['connections'])
