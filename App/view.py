@@ -78,8 +78,9 @@ while True:
         print("Total de paises:")
         numvertex = controller.totalStops(cont)
         numedges = controller.totalConnections(cont)
-        print(numedges)
-        print(numvertex)
+        print("Numeros de arcos: " +str(numedges))
+        print("Numeros de vertices: " +str(numvertex))
+
 
     elif int(inputs[0]) == 2:
         pass

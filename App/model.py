@@ -62,18 +62,21 @@ def newAnalyzer():
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareStopIds)
+
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
 
 def cargar_grafos(analyzer, service):
     
-  
-    if not (gr.containsVertex(analyzer["connections"],service["origin"])):
-        gr.insertVertex(analyzer["connections"],service["origin"])
+    origin=(service["origin"]) + "-" + (service["cable_id"])
+    if not (gr.containsVertex(analyzer["connections"],origin)):
+        gr.insertVertex(analyzer["connections"],origin)
     if not (gr.containsVertex(analyzer["connections"],service["destination"])):
         gr.insertVertex(analyzer["connections"],service["destination"])
-    gr.addEdge(analyzer["connections"],service["origin"],service["destination"],service["cable_length"])
+    gr.addEdge(analyzer["connections"],origin,service["destination"],service["cable_length"])
+
+    
 
     
 
