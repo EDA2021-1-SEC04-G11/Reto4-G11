@@ -26,7 +26,9 @@
 
 
 import config
+import haversine as hs
 import sys
+
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
@@ -61,7 +63,7 @@ def newAnalyzer():
                     'countries':None,
                     "lp": None
                     }
-
+        fkfkfkf
         analyzer['lp'] = m.newMap(numelements=14000,maptype='PROBING')
 
         analyzer['landing'] = m.newMap(numelements=14000,
@@ -153,21 +155,26 @@ def addRouteConnections(analyzer):
     que se puede realizar en una estación.
     """
     lststops = m.keySet(analyzer['lp'])
-    
+    contador =0 
     for key in lt.iterator(lststops):
         
         lstroutes = m.get(analyzer['lp'], key)['value']
         
-        for x in range(1,lt.size(lstroutes)):
+        prevrout= None
+        #for x in range(1,lt.size(lstroutes)):
+        for x in lt.iterator(lstroutes):
             
-            prevrout = lt.getElement(lstroutes, x)
-            route = lt.getElement(lstroutes, x+1)
-        
+            #prevrout = lt.getElement(lstroutes, x)
+            #route = lt.getElement(lstroutes, x+1)
+            route = key 
+            print(contador,"Previo: {}, Actual: {}".format(prevrout,route))
             if prevrout is not None:
                 addConnection(analyzer, prevrout, route, 0.1)
                 addConnection(analyzer, route, prevrout, 0.1)
             prevrout = route 
-    
+            contador += 1
+            
+            
 # Funciones de consulta
         
 # ==============================
