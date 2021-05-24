@@ -61,10 +61,8 @@ def newAnalyzer():
                     'landing': None,
                     'connections': None,
                     'countries':None,
-                    "lp": None
+                    "lista":None
                     }
-        fkfkfkf
-        analyzer['lp'] = m.newMap(numelements=14000,maptype='PROBING')
 
         analyzer['landing'] = m.newMap(numelements=14000,
                                      maptype='PROBING')
@@ -75,6 +73,7 @@ def newAnalyzer():
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareStopIds)
+        analyzer["lista"] = lt.newList("ARRAY_LIST")
         return analyzer
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
@@ -94,10 +93,49 @@ def cargar_grafos(analyzer, service):
     if not (gr.containsVertex(analyzer["connections"],destination_id)):
         gr.insertVertex(analyzer["connections"],destination_id)
     gr.addEdge(analyzer["connections"],origin_id,destination_id,arc)
+
+    lt.addLast(analyzer["lista"],origin_id)
+    lt.addLast(analyzer["lista"],destination_id)
     
-    add_lp(analyzer,service["cable_id"],origin_id)
-    add_lp(analyzer,service["cable_id"], destination_id)
-    
+def cargar_p(analyzer):
+    for x  in lt.iterator(analyzer["lista"]):
+        punto=(x[0:4])
+        for y in lt.iterator(analyzer["lista"]):
+            punto2=(y[0:4])
+
+            if punto == punto2 and x != y :
+                gr.addEdge(analyzer["connections"],x,y,(0.1,""))
+
+def connect_capital(analyzer):
+    for x  in lt.iterator(analyzer["lista"]):
+        punto=(x[0:4])
+        dato =m.get(analyzer["landing"],punto)
+        if dato is not None:
+            valor=me.getValue(dato)
+            paisciudad=(valor["elements"][0]["name"])
+            latitudoriginal=(valor["elements"][0]["latitude"])
+            longitudeoriginal=(valor["elements"][0]["longitude"])
+            hola=paisciudad.split(",")
+            hola=hola[-1]
+            hola=hola.replace(" ","")
+            value=m.get(analyzer["countries"],hola)
+           
+            if value is not None:
+                va=me.getValue(value)
+                
+                latituddestino=(va["elements"][0]["CapitalLatitude"])
+                longitudestino=(va["elements"][0]["CapitalLongitude"])
+                nombre=(va["elements"][0]["CountryName"])+((va["elements"][0]["CountryCode"]))
+                print(nombre)
+                
+               
+
+
+
+
+
+
+
 
 def add_country(analyzer,service):
     
@@ -130,50 +168,9 @@ def add_landingPoint(analyzer,service):
         valor= me.getValue(pays)
     
     lt.addLast(valor,service)
-
-def add_lp(analyzer,service,lp_n):
     
-    entry = m.get(analyzer['lp'], lp_n)
-    if entry is None:
-        lstroutes = lt.newList("ARRAY_LIST")
-        lt.addLast(lstroutes, service)
-        m.put(analyzer['lp'], lp_n, lstroutes)
-    else:
-        lstroutes = entry['value']
-        info = service
-        
-        if not lt.isPresent(lstroutes, info):
-            lt.addLast(lstroutes, info)
     
-    return analyzer
 
-def addRouteConnections(analyzer):
-    """
-    Por cada vertice (cada estacion) se recorre la lista
-    de rutas servidas en dicha estación y se crean
-    arcos entre ellas para representar el cambio de ruta
-    que se puede realizar en una estación.
-    """
-    lststops = m.keySet(analyzer['lp'])
-    contador =0 
-    for key in lt.iterator(lststops):
-        
-        lstroutes = m.get(analyzer['lp'], key)['value']
-        
-        prevrout= None
-        #for x in range(1,lt.size(lstroutes)):
-        for x in lt.iterator(lstroutes):
-            
-            #prevrout = lt.getElement(lstroutes, x)
-            #route = lt.getElement(lstroutes, x+1)
-            route = key 
-            print(contador,"Previo: {}, Actual: {}".format(prevrout,route))
-            if prevrout is not None:
-                addConnection(analyzer, prevrout, route, 0.1)
-                addConnection(analyzer, route, prevrout, 0.1)
-            prevrout = route 
-            contador += 1
-            
             
 # Funciones de consulta
         
@@ -186,8 +183,8 @@ def formatVertexorigin(service):
     Se formatea el nombrer del vertice con el id de la estación
     seguido de la ruta.
     """
-    name = service['origin'] + ';'
-    name = name + service['cable_id']
+    name = service['origin'] + '*'
+    name = name + service['cable_name']
     return name
 
 def formatVertexdestination(service):
@@ -195,8 +192,8 @@ def formatVertexdestination(service):
     Se formatea el nombrer del vertice con el id de la estación
     seguido de la ruta.
     """
-    name = service['destination'] + ';'
-    name = name + service['cable_id']
+    name = service['destination'] + '*'
+    name = name + service['cable_name']
     return name
 
 def addConnection(analyzer, origin, destination, distance):

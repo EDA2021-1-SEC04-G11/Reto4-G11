@@ -43,7 +43,9 @@ def loadData(analyzer):
     """
     loadServices(analyzer)
     loadcountry(analyzer)
+    model.cargar_p(analyzer)
     loadLP(analyzer)
+    model.connect_capital(analyzer)
     
 
 def loadServices(analyzer):
@@ -70,7 +72,7 @@ def loadServices(analyzer):
     
         model.cargar_grafos(analyzer, service)
     
-    model.addRouteConnections(analyzer)
+    #model.addRouteConnections(analyzer)
 
     return analyzer
 
@@ -87,14 +89,10 @@ def loadLP(analyzer):
     lpfile = cf.data_dir + lpfile
     input_file = csv.DictReader(open(lpfile, encoding="utf-8"),
                                 delimiter=",")
-    
-    servicesfile = 'connections.csv'
-    servicesfile = cf.data_dir + servicesfile
-    in_file = csv.DictReader(open(servicesfile, encoding="utf-8"),
-                                delimiter=",")
   
     for service in input_file:
         model.add_landingPoint(analyzer,service)
+        
 def loadcountry(analyzer):
     """
     Carga los datos de los archivos CSV en el modelo.
@@ -134,7 +132,7 @@ def totalConnections(analyzer):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-def countrySize(analyzer):
+#def countrySize(analyzer):
     """
     Número de libros en el catago
     """

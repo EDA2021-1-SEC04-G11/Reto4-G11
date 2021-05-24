@@ -78,13 +78,12 @@ while True:
         numvertex = controller.totalStops(cont)
         numedges = controller.totalConnections(cont)
         last_ct = controller.last_country(cont)
-        first_ct = controller.first_lp(cont)
+        
         
         print("Total de landing points:", numvertex)
         print("Total de conexiones entre landing-points", numedges)
-        print("Total de paises:", str(controller.countrySize(cont)))
-        print("ÚLTIMO PAÍS EN CARGAR...\n",last_ct)
-        print("PRIMER LANDING POINT CARGADO:\n",first_ct)
+      
+      
         
 
     elif int(inputs[0]) == 2:
