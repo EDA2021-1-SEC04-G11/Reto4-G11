@@ -126,7 +126,7 @@ def connect_capital(analyzer):
                 latituddestino=(va["elements"][0]["CapitalLatitude"])
                 longitudestino=(va["elements"][0]["CapitalLongitude"])
                 nombre=(va["elements"][0]["CountryName"])+("-")+((va["elements"][0]["CountryCode"]))
-                print(nombre)
+                
                 origen=(float(latitudoriginal),float(longitudeoriginal))
                 destino=(float(latituddestino),float(longitudestino))
                 longitud=hs(origen,destino)
