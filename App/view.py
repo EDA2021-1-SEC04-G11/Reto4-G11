@@ -93,7 +93,8 @@ while True:
         lp2= (input("Ingrese el nombre del landing point2: "))
        
         result = controller.req1(cont,lp1,lp2)
-        print("Número de ")
+        print("Número de clústers presentes en la red:", result[1])
+        print("Los dos lp se enceuntran en el mismo clúster:", result[0])
     elif int(inputs[0]) == 3:
         pass
     elif int(inputs[0]) == 4:
