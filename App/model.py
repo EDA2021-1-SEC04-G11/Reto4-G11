@@ -26,7 +26,7 @@
 
 
 import config
-import haversine as hs
+from haversine import haversine, Unit
 import sys
 
 from DISClib.ADT.graph import gr
@@ -126,10 +126,9 @@ def connect_capital(analyzer):
                 latituddestino=(va["elements"][0]["CapitalLatitude"])
                 longitudestino=(va["elements"][0]["CapitalLongitude"])
                 nombre=(va["elements"][0]["CountryName"])+("-")+((va["elements"][0]["CountryCode"]))
-                
                 origen=(float(latitudoriginal),float(longitudeoriginal))
                 destino=(float(latituddestino),float(longitudestino))
-                longitud=hs(origen,destino)
+                longitud=haversine(origen,destino)
                 print(longitud)
                 gr.addEdge(analyzer["connections"],nombre,x,(longitud,""))
 
