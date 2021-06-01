@@ -93,6 +93,7 @@ while True:
         lp2= (input("Ingrese el nombre del landing point2: "))
        
         result = controller.req1(cont,lp1,lp2)
+        print("Número de ")
     elif int(inputs[0]) == 3:
         pass
     elif int(inputs[0]) == 4:
