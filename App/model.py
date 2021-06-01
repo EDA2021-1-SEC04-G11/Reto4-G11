@@ -24,7 +24,11 @@
  * Dario Correal - Version inicial
  """
 
+from haversine import haversine, Unit
+import os 
 
+import folium
+import pandas as pd 
 import config
 from haversine import haversine, Unit
 import sys
@@ -241,8 +245,6 @@ def req1(analyzer,lp1,lp2):
     kosa = scc.KosarajuSCC(analyzer["connections"])
     
     for x  in lt.iterator(analyzer["lista"]):
-        
-        
         hola=x.split("*")
         hola=(hola[1])
         
@@ -250,6 +252,33 @@ def req1(analyzer,lp1,lp2):
             dato1 = x
         if hola == lp2:
             dato2 = x
+    pos=(dato1[0:4])
+    poss=(dato2[0:4])
+    dato =m.get(analyzer["landing"],pos)
+    datoo=m.get(analyzer["landing"],poss)
+    valor=me.getValue(dato)
+    valorr=me.getValue(datoo)
+    pos1l=float(valor["elements"][0]["latitude"])
+    pos1la=float(valor["elements"][0]["longitude"])
+    pos2l=float(valorr["elements"][0]["latitude"])
+    pos2la=float(valorr["elements"][0]["longitude"])
+    
+    ma=folium.Map([48.35, 5.89])
+    folium.Marker(
+        location=[pos1l,pos1la],
+        popup=lp1
+    
+        ).add_to(ma)
+    folium.Marker(
+        location=[pos2l,pos2la],
+        popup=lp2
+    
+    ).add_to(ma)
+
+    aline=folium.PolyLine(locations=[(pos1l,pos1la),(pos2l,pos2la)],weight=2,color = 'blue')
+    ma.add_children(aline)
+    ma.save("Req1map.html")
+    
 
     var = scc.stronglyConnected(kosa, dato1, dato2)
     number_scc = scc.connectedComponents(kosa)

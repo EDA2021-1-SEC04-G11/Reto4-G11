@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_7d22c00680734b33a83b92fbbc101aa5 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_7d22c00680734b33a83b92fbbc101aa5" ></div>
+        
+</body>
+<script>    
+    
+            var map_7d22c00680734b33a83b92fbbc101aa5 = L.map(
+                "map_7d22c00680734b33a83b92fbbc101aa5",
+                {
+                    center: [48.35, 5.89],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 10,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_c41bba1e089446acb78820414373d1a6 = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_7d22c00680734b33a83b92fbbc101aa5);
+        
+    
+            var marker_bcaf797da35f48ea905d2c8cc33306ba = L.marker(
+                [33.844472, -118.388025],
+                {}
+            ).addTo(map_7d22c00680734b33a83b92fbbc101aa5);
+        
+    
+        var popup_69b98ab26da94cd4ab393840a9a3306f = L.popup({"maxWidth": "100%"});
+
+        
+            var html_4d261ee657a84f6bb97ad288b0792167 = $(`<div id="html_4d261ee657a84f6bb97ad288b0792167" style="width: 100.0%; height: 100.0%;">RedondoBeach</div>`)[0];
+            popup_69b98ab26da94cd4ab393840a9a3306f.setContent(html_4d261ee657a84f6bb97ad288b0792167);
+        
+
+        marker_bcaf797da35f48ea905d2c8cc33306ba.bindPopup(popup_69b98ab26da94cd4ab393840a9a3306f)
+        ;
+
+        
+    
+    
+            var marker_2da96a6fca9940419e4ee0bd49d22ee3 = L.marker(
+                [10.341846, 107.079198],
+                {}
+            ).addTo(map_7d22c00680734b33a83b92fbbc101aa5);
+        
+    
+        var popup_771173dcec7e46c39cc8e160807e6287 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_19a617ef7d4e403782a2ceba0e252081 = $(`<div id="html_19a617ef7d4e403782a2ceba0e252081" style="width: 100.0%; height: 100.0%;">VungTau</div>`)[0];
+            popup_771173dcec7e46c39cc8e160807e6287.setContent(html_19a617ef7d4e403782a2ceba0e252081);
+        
+
+        marker_2da96a6fca9940419e4ee0bd49d22ee3.bindPopup(popup_771173dcec7e46c39cc8e160807e6287)
+        ;
+
+        
+    
+    
+            var poly_line_623e28304be041f8937f354e33314e31 = L.polyline(
+                [[33.844472, -118.388025], [10.341846, 107.079198]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_7d22c00680734b33a83b92fbbc101aa5);
+        
+</script>
