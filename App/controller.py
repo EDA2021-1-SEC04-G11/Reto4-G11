@@ -127,6 +127,8 @@ def totalConnections(analyzer):
 
 def req1(cont,lp1,lp2):
     return model.req1(cont,lp1,lp2)
+def req2(cont):
+    return model.req2(cont)
 
 
 # Inicialización del Catálogo de libros

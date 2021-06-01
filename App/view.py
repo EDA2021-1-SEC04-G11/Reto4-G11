@@ -88,7 +88,7 @@ while True:
         print("último país", last_ct)
 
     elif int(inputs[0]) == 2:
-        print("RedondoBeach, VungTau")
+        print("RedondoBeach, VungTau, Songkhla")
         lp1 = input("Ingrese el nombre del landing point1: ")
         lp2= (input("Ingrese el nombre del landing point2: "))
        
@@ -96,7 +96,9 @@ while True:
         print("Número de clústers presentes en la red:", result[1])
         print("Los dos lp se enceuntran en el mismo clúster:", result[0])
     elif int(inputs[0]) == 3:
-        pass
+        
+        result=controller.req2(cont)
+        
     elif int(inputs[0]) == 4:
         pass
     elif int(inputs[0]) == 5:

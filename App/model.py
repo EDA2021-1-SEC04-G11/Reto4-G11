@@ -28,12 +28,13 @@ from haversine import haversine, Unit
 import os 
 
 import folium
+from numpy import split
 import pandas as pd 
 import config
 from haversine import haversine, Unit
 import sys
 
-
+from DISClib.DataStructures import adjlist as adj 
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
@@ -95,29 +96,34 @@ def cargar_grafos(analyzer, service):
 
     if not (gr.containsVertex(analyzer["connections"],origin_id)):
         gr.insertVertex(analyzer["connections"],origin_id)
+        lt.addLast(analyzer["lista"],origin_id)
     if not (gr.containsVertex(analyzer["connections"],destination_id)):
         gr.insertVertex(analyzer["connections"],destination_id)
+        lt.addLast(analyzer["lista"],destination_id)
     gr.addEdge(analyzer["connections"],origin_id,destination_id,arc)
-
-    lt.addLast(analyzer["lista"],origin_id)
-    lt.addLast(analyzer["lista"],destination_id)
     
+    
+ 
 def cargar_p(analyzer):
     for x  in lt.iterator(analyzer["lista"]):
         
-        punto=(x[0:4])
+        punto=x.split("*")
+        punto=punto[0]
        
         for y in lt.iterator(analyzer["lista"]):
-            punto2=(y[0:4])
+            punto2=y.split("*")
+            punto2=punto[0]
 
             if punto == punto2 and x != y :
                 gr.addEdge(analyzer["connections"],x,y,(0.1,""))
+                gr.addEdge(analyzer["connections"],y,x,(0.1,""))
 
 def connect_capital(analyzer):
     for x  in lt.iterator(analyzer["lista"]):
+    
+        punto=x.split("*")
+        punto=punto[0]
         
-       
-        punto=(x[0:4])
         dato =m.get(analyzer["landing"],punto)
         
         if dato is not None:
@@ -243,17 +249,23 @@ def addConnection(analyzer, origin, destination, distance):
 #-------------------------------
 def req1(analyzer,lp1,lp2):
     kosa = scc.KosarajuSCC(analyzer["connections"])
-    
+    lista1=[]
+    lista2=[]
     for x  in lt.iterator(analyzer["lista"]):
         hola=x.split("*")
         hola=(hola[1])
         
         if hola == lp1:
-            dato1 = x
+            lista1.append(x)
+            dato1= x
         if hola == lp2:
+            lista2.append(x)
             dato2 = x
-    pos=(dato1[0:4])
-    poss=(dato2[0:4])
+    pos=(dato1.split("*"))
+    pos=pos[0]
+    poss=dato2.split("*")
+    poss=poss[0]
+    
     dato =m.get(analyzer["landing"],pos)
     datoo=m.get(analyzer["landing"],poss)
     valor=me.getValue(dato)
@@ -263,7 +275,7 @@ def req1(analyzer,lp1,lp2):
     pos2l=float(valorr["elements"][0]["latitude"])
     pos2la=float(valorr["elements"][0]["longitude"])
     
-    ma=folium.Map([48.35, 5.89])
+    ma=folium.Map()
     folium.Marker(
         location=[pos1l,pos1la],
         popup=lp1
@@ -276,24 +288,57 @@ def req1(analyzer,lp1,lp2):
     ).add_to(ma)
 
     aline=folium.PolyLine(locations=[(pos1l,pos1la),(pos2l,pos2la)],weight=2,color = 'blue')
-    ma.add_children(aline)
+    ma.add_child(aline)
     ma.save("Req1map.html")
-    
 
-    var = scc.stronglyConnected(kosa, dato1, dato2)
+    resul=False
+    for x in range(0,len(lista1)):
+        var = scc.stronglyConnected(kosa, lista1[x], lista2[x])
+        if var == True:
+            resul=True
     number_scc = scc.connectedComponents(kosa)
-    return var, number_scc
-        
+    return resul, number_scc
     
-    
-    
-
 
 #-------------------------------
 # REQUERIMIENTO 2
 #-------------------------------
+def req2(analyzer):
+    maxi=0
+    dato=None
+    lis = lt.newList()
+    lista = m.keySet(analyzer["landing"])
+    for x  in lt.iterator(lista):
+        contador =0
+        for y  in lt.iterator(analyzer["lista"]):
+            z = y.split("*")
+            z = z[0]
+            if x == z:
+                var = adj.adjacents(analyzer["connections"],y)
+                
+                num =lt.size(var)
+                
+                contador += num
+                
+        if contador > maxi:
+            maxi = contador
+            dato=x
+    for x  in lt.iterator(analyzer["lista"]):
+        z = x.split("*")
+        z = z[0]
+        if z == dato:
+            print("hola")
+            if lt.isPresent(lis, x) == 0:
+                print(x)
 
+                #lt.addLast(lis,x)
+    
+    #print(lis)
+    return dato
 
+            
+            
+        
 #-------------------------------
 # REQUERIMIENTO 3
 #-------------------------------
