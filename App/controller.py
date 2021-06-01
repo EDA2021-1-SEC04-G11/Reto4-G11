@@ -41,10 +41,11 @@ def loadData(analyzer):
     """
     Carga los datos de los archivos CSV en el modelo
     """
+    loadLP(analyzer)
     loadServices(analyzer)
     loadcountry(analyzer)
     model.cargar_p(analyzer)
-    loadLP(analyzer)
+  
     model.connect_capital(analyzer)
     
 
@@ -124,6 +125,9 @@ def totalConnections(analyzer):
     """
     return model.totalConnections(analyzer)
 
+def req1(cont,lp1,lp2):
+    return model.req1(cont,lp1,lp2)
+
 
 # Inicialización del Catálogo de libros
 
@@ -132,7 +136,7 @@ def totalConnections(analyzer):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-#def countrySize(analyzer):
+def countrySize(analyzer):
     """
     Número de libros en el catago
     """

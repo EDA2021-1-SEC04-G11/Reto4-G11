@@ -26,8 +26,9 @@
 
 
 import config
-import haversine as hs
+from haversine import haversine, Unit
 import sys
+
 
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
@@ -84,8 +85,8 @@ def newAnalyzer():
 
 def cargar_grafos(analyzer, service):
     
-    origin_id = formatVertexorigin(service)
-    destination_id = formatVertexdestination(service)
+    origin_id = formatVertexorigin(analyzer,service)
+    destination_id = formatVertexdestination(analyzer,service)
     arc = (service["cable_length"],service["capacityTBPS"])
 
     if not (gr.containsVertex(analyzer["connections"],origin_id)):
@@ -99,7 +100,9 @@ def cargar_grafos(analyzer, service):
     
 def cargar_p(analyzer):
     for x  in lt.iterator(analyzer["lista"]):
+        
         punto=(x[0:4])
+       
         for y in lt.iterator(analyzer["lista"]):
             punto2=(y[0:4])
 
@@ -108,8 +111,11 @@ def cargar_p(analyzer):
 
 def connect_capital(analyzer):
     for x  in lt.iterator(analyzer["lista"]):
+        
+       
         punto=(x[0:4])
         dato =m.get(analyzer["landing"],punto)
+        
         if dato is not None:
             valor=me.getValue(dato)
             paisciudad=(valor["elements"][0]["name"])
@@ -129,19 +135,17 @@ def connect_capital(analyzer):
                 
                 origen=(float(latitudoriginal),float(longitudeoriginal))
                 destino=(float(latituddestino),float(longitudestino))
-                longitud=hs(origen,destino)
-                print(longitud)
+                longitud=haversine(origen,destino)
+                
+                if not (gr.containsVertex(analyzer["connections"],nombre)):
+                    gr.insertVertex(analyzer["connections"],nombre)
+                   
+
                 gr.addEdge(analyzer["connections"],nombre,x,(longitud,""))
+        
 
                 
                
-
-
-
-
-
-
-
 
 def add_country(analyzer,service):
     
@@ -160,6 +164,9 @@ def add_country(analyzer,service):
     lt.addLast(valor,service)
 
 def add_landingPoint(analyzer,service):
+   
+
+    
     
     artist_n=service["landing_point_id"].strip()
 
@@ -184,22 +191,38 @@ def add_landingPoint(analyzer,service):
 # Funciones de formato 
 # ==============================
 
-def formatVertexorigin(service):
+def formatVertexorigin(analyzer, service):
     """
     Se formatea el nombrer del vertice con el id de la estación
     seguido de la ruta.
     """
     name = service['origin'] + '*'
+    dato =m.get(analyzer["landing"],service['origin'])
+    valor=me.getValue(dato)
+    paisciudad=(valor["elements"][0]["name"])
+    hola=paisciudad.split(",")
+    hola=hola[0]
+    hola=hola.replace(" ","")
+    name= name + hola + "*"
     name = name + service['cable_name']
+    
     return name
 
-def formatVertexdestination(service):
+def formatVertexdestination(analyzer, service):
     """
     Se formatea el nombrer del vertice con el id de la estación
     seguido de la ruta.
     """
     name = service['destination'] + '*'
+    dato =m.get(analyzer["landing"],service['destination'])
+    valor=me.getValue(dato)
+    paisciudad=(valor["elements"][0]["name"])
+    hola=paisciudad.split(",")
+    hola=hola[0]
+    hola=hola.replace(" ","")
+    name= name + hola + "*"
     name = name + service['cable_name']
+    
     return name
 
 def addConnection(analyzer, origin, destination, distance):
@@ -210,6 +233,51 @@ def addConnection(analyzer, origin, destination, distance):
     if edge is None:
         gr.addEdge(analyzer['connections'], origin, destination, distance)
     return analyzer
+
+
+#-------------------------------
+# REQUERIMIENTO 1
+#-------------------------------
+def req1(analyzer,lp1,lp2):
+    kosa = scc.KosarajuSCC(analyzer["connections"])
+    
+    for x  in lt.iterator(analyzer["lista"]):
+        
+        
+        hola=x.split("*")
+        hola=(hola[1])
+        
+        if hola == lp1:
+            dato1 = x
+        if hola == lp2:
+            dato2 = x
+
+    var = scc.stronglyConnected(kosa, dato1, dato2)
+    number_scc = scc.connectedComponents(kosa)
+    return var, number_scc
+        
+    
+    
+    
+
+
+#-------------------------------
+# REQUERIMIENTO 2
+#-------------------------------
+
+
+#-------------------------------
+# REQUERIMIENTO 3
+#-------------------------------
+
+#-------------------------------
+# REQUERIMIENTO 4
+#-------------------------------
+
+
+#-------------------------------
+# REQUERIMIENTO 5
+#-------------------------------
 
 # ==============================
 # Funciones de Comparacion

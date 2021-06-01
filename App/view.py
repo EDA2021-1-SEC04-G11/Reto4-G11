@@ -78,16 +78,21 @@ while True:
         numvertex = controller.totalStops(cont)
         numedges = controller.totalConnections(cont)
         last_ct = controller.last_country(cont)
-        
+        total_countries = controller.countrySize(cont)
+        first_lp = controller.first_lp(cont)
         
         print("Total de landing points:", numvertex)
         print("Total de conexiones entre landing-points", numedges)
-      
-      
-        
+        print("Total de países:", total_countries)
+        print("Primer landing point:", first_lp)
+        print("último país", last_ct)
 
     elif int(inputs[0]) == 2:
-        pass
+        print("RedondoBeach, VungTau")
+        lp1 = input("Ingrese el nombre del landing point1: ")
+        lp2= (input("Ingrese el nombre del landing point2: "))
+       
+        result = controller.req1(cont,lp1,lp2)
     elif int(inputs[0]) == 3:
         pass
     elif int(inputs[0]) == 4:
