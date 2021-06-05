@@ -93,6 +93,8 @@ def newAnalyzer():
 
 def cargar_grafos(analyzer, service):
     
+    
+
     origin_id = formatVertexorigin(analyzer,service)
     destination_id = formatVertexdestination(analyzer,service)
     arc = float(service["cable_length"])
@@ -425,13 +427,14 @@ def req3(analyzer,lp1,lp2):
 #-------------------------------
 
 def req4(analyzer):
-   v= '5779*Paddington*Australia-Japan Cable (AJC)'
-   h = b.BreadhtFisrtSearch(analyzer["connections"],'5779*Paddington*Australia-Japan Cable (AJC)')
    
-   hello = p.PrimMST(analyzer["connections"])
-   prim = p.scan(analyzer["connections"], hello, v)
-   cf = p.edgesMST(analyzer["connections"],hello)
-   print(prim)
+   v= '5779*Paddington*Australia-Japan Cable (AJC)'
+   h = b.BreadhtFisrtSearch(analyzer["connections"],'10383*Iskele*Turcyos-2')
+   pedo=p.PrimMST(analyzer["connections"])
+   print(pedo)
+   
+ 
+   
 
    
    
@@ -441,6 +444,52 @@ def req4(analyzer):
 #-------------------------------
 
 
+def req5(analyzer, lp):
+    lista=[]
+    lis = lt.newList()
+    listad=[]
+
+    for x  in lt.iterator(analyzer["lista"]):
+        if lp in x :
+            vert=x
+            lista.append(x)
+            
+            dato=x.split("*")
+            dato=dato[0]
+            hol=adj.adjacents(analyzer["connections"],x)
+            for i in lt.iterator(hol):
+                if lt.isPresent(lis, i) == 0:
+                    lt.addLast(lis,i)
+    print(lista)
+    for y in range(0,len(lista)):
+
+         for x in lt.iterator(lis):
+        
+            peso=gr.getEdge(analyzer["connections"],lista[y],x)
+            if peso is not None :
+                if not x in listad:
+                    listad.append(x)
+                    print(peso)
+
+
+    print(len(listad))
+            
+        
+
+
+            
+
+            
+
+    
+
+                
+
+               
+                
+                
+                
+            
 
 
 # ==============================

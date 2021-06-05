@@ -134,6 +134,8 @@ def req3(analyzer,lp1,lp2):
     return model.req3(analyzer,lp1,lp2)
 def req4(cont):
     return model.req4(cont)
+def req5(cont, lp):
+    return model.req5(cont,lp)
 
 # Inicialización del Catálogo de libros
 

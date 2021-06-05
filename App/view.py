@@ -109,7 +109,8 @@ while True:
     elif int(inputs[0]) == 5:
         result=controller.req4(cont)
     elif int(inputs[0]) == 6:
-        pass
+        lp = input("Ingrese el landing point que le gustaría consultar")
+        result = controller.req5(cont,lp)
     elif int(inputs[0]) == 7:
         pass
     elif int(inputs[0]) == 8:
