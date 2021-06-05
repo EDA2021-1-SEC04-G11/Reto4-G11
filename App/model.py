@@ -33,7 +33,10 @@ import pandas as pd
 import config
 from haversine import haversine, Unit
 import sys
-
+from DISClib.ADT import orderedmap as om
+from DISClib.ADT import list as lt
+from DISClib.Algorithms.Graphs import prim as p 
+from DISClib.Algorithms.Graphs import bfs as b
 from DISClib.DataStructures import adjlist as adj 
 from DISClib.ADT.graph import gr
 from DISClib.ADT import map as m
@@ -92,7 +95,7 @@ def cargar_grafos(analyzer, service):
     
     origin_id = formatVertexorigin(analyzer,service)
     destination_id = formatVertexdestination(analyzer,service)
-    arc = (service["cable_length"],service["capacityTBPS"])
+    arc = float(service["cable_length"])
 
     if not (gr.containsVertex(analyzer["connections"],origin_id)):
         gr.insertVertex(analyzer["connections"],origin_id)
@@ -101,7 +104,7 @@ def cargar_grafos(analyzer, service):
         gr.insertVertex(analyzer["connections"],destination_id)
         lt.addLast(analyzer["lista"],destination_id)
     gr.addEdge(analyzer["connections"],origin_id,destination_id,arc)
-    
+    gr.addEdge(analyzer["connections"],destination_id,origin_id,arc)
     
  
 def cargar_p(analyzer):
@@ -115,8 +118,8 @@ def cargar_p(analyzer):
             punto2=punto[0]
 
             if punto == punto2 and x != y :
-                gr.addEdge(analyzer["connections"],x,y,(0.1,""))
-                gr.addEdge(analyzer["connections"],y,x,(0.1,""))
+                gr.addEdge(analyzer["connections"],x,y,(0.1))
+                gr.addEdge(analyzer["connections"],y,x,(0.1))
 
 def connect_capital(analyzer):
     for x  in lt.iterator(analyzer["lista"]):
@@ -150,7 +153,8 @@ def connect_capital(analyzer):
                     gr.insertVertex(analyzer["connections"],nombre)
                    
 
-                gr.addEdge(analyzer["connections"],nombre,x,(longitud,""))
+                gr.addEdge(analyzer["connections"],nombre,x,(longitud))
+                gr.addEdge(analyzer["connections"],x,nombre,(longitud))
         
 
                 
@@ -374,6 +378,7 @@ def req2(analyzer):
                 
 
                 lt.addLast(lis,x)
+            
 
     
     
@@ -389,15 +394,48 @@ def req2(analyzer):
 #-------------------------------
 # REQUERIMIENTO 3
 #-------------------------------
+def req3(analyzer,lp1,lp2):
+    pais1=m.get(analyzer["countries"],lp1)
+    pais1=me.getValue(pais1)
+    paisn1=(pais1["elements"][0]["CountryName"])+("-")+((pais1["elements"][0]["CountryCode"]))
+    pais2=m.get(analyzer["countries"],lp2)
+    pais2=me.getValue(pais2)
+    paisn2=(pais2["elements"][0]["CountryName"])+("-")+((pais2["elements"][0]["CountryCode"]))
+    print(paisn1)
+    print(paisn2)
+    
+    valor = djk.Dijkstra(analyzer["connections"], paisn1)
+    distancia_t =djk.distTo(valor, paisn2)
+    ruta =djk.pathTo(valor, paisn2)
+    
+    return (distancia_t, ruta)
 
+
+
+
+    return None
 #-------------------------------
 # REQUERIMIENTO 4
 #-------------------------------
 
+def req4(analyzer):
+   v= '5779*Paddington*Australia-Japan Cable (AJC)'
+   h = b.BreadhtFisrtSearch(analyzer["connections"],'5779*Paddington*Australia-Japan Cable (AJC)')
+   
+   hello = p.PrimMST(analyzer["connections"])
+   prim = p.scan(analyzer["connections"], hello, v)
+   cf = p.edgesMST(analyzer["connections"],hello)
+   print(prim)
 
+   
+   
+   
 #-------------------------------
 # REQUERIMIENTO 5
 #-------------------------------
+
+
+
 
 # ==============================
 # Funciones de Comparacion

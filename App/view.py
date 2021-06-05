@@ -100,9 +100,14 @@ while True:
         result=controller.req2(cont)
         
     elif int(inputs[0]) == 4:
-        pass
+        
+        pais_A = input("Ingrese el país A:")
+        pais_B = input("Ingrese el país B:")
+
+        result = controller.req3(cont,pais_A,pais_B)
+        print("Distancia Total: {} \n Ruta: {}".format(result[0],result[1]))
     elif int(inputs[0]) == 5:
-        pass
+        result=controller.req4(cont)
     elif int(inputs[0]) == 6:
         pass
     elif int(inputs[0]) == 7:

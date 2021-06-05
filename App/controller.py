@@ -66,7 +66,7 @@ def loadServices(analyzer):
     for service in input_file:
         
         service["origin"]=service.pop('\ufefforigin')
-        service["cable_length"] = service["cable_length"].replace(" km","")
+        service["cable_length"] = service["cable_length"].replace(" km","").replace(",",".")
         
         if service['cable_length'] == 'n.a.':
             service['cable_length'] = 0
@@ -130,6 +130,10 @@ def req1(cont,lp1,lp2):
 def req2(cont):
     return model.req2(cont)
 
+def req3(analyzer,lp1,lp2):
+    return model.req3(analyzer,lp1,lp2)
+def req4(cont):
+    return model.req4(cont)
 
 # Inicialización del Catálogo de libros
 
