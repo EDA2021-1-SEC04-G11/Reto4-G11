@@ -432,7 +432,7 @@ def req4(analyzer):
    search = p.PrimMST(graph)
    weight = p.weightMST(graph,search)
    edges = p.edgesMST(graph,search)
-   print(edges["distTo"])
+   print(edges["mst"])
    """
    for key in edges.keys():
        print(key)
