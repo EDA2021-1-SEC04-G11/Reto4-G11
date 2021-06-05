@@ -355,8 +355,14 @@ def req2(analyzer):
                 
                 i=i.split("*")
                 i=i[0]
-                datorr =m.get(analyzer["landing"],i)
-                valorr=me.getValue(datorr)
+                
+                if m.contains(analyzer["landing"], i):
+
+                
+                    datorr =m.get(analyzer["landing"],i)
+                    valorr=me.getValue(datorr)
+
+                
                 pos2l=float(valorr["elements"][0]["latitude"])
                 pos2la=float(valorr["elements"][0]["longitude"])
                 lp2=(valorr["elements"][0]["name"])
