@@ -422,10 +422,19 @@ def req4(analyzer):
    v= '5779*Paddington*Australia-Japan Cable (AJC)'
    h = b.BreadhtFisrtSearch(analyzer["connections"],'5779*Paddington*Australia-Japan Cable (AJC)')
    
-   hello = p.PrimMST(analyzer["connections"])
-   prim = p.scan(analyzer["connections"], hello, v)
-   cf = p.edgesMST(analyzer["connections"],hello)
-   print(prim)
+   graph= analyzer["connections"]
+   search = p.PrimMST(graph)
+   weight = p.weightMST(graph,search)
+   edges = p.edgesMST(graph,search)
+   print(edges["distTo"])
+   """
+   for key in edges.keys():
+       print(key)
+   el dict tiene estas keys:
+   edgeTo, distTo, marked,pq, mst
+   
+   """
+   
 
    
    
