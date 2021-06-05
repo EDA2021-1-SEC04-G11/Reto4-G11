@@ -290,9 +290,14 @@ def req1(analyzer,lp1,lp2):
     aline=folium.PolyLine(locations=[(pos1l,pos1la),(pos2l,pos2la)],weight=2,color = 'blue')
     ma.add_child(aline)
     ma.save("Req1map.html")
+    
 
     resul=False
-    for x in range(0,len(lista1)):
+    ram=len(lista1)
+    if len(lista1) >= len(lista2):
+        ram= len(lista2)
+    
+    for x in range(0,ram):
         var = scc.stronglyConnected(kosa, lista1[x], lista2[x])
         if var == True:
             resul=True
@@ -323,17 +328,59 @@ def req2(analyzer):
         if contador > maxi:
             maxi = contador
             dato=x
+
+    dator =m.get(analyzer["landing"],dato)
+    valor=me.getValue(dator)
+    pos1l=float(valor["elements"][0]["latitude"])
+    pos1la=float(valor["elements"][0]["longitude"])
+    lp1=(valor["elements"][0]["name"])
+    ma=folium.Map()
+    folium.Marker(
+        location=[pos1l,pos1la],
+        popup=lp1
+    
+        ).add_to(ma)
+
     for x  in lt.iterator(analyzer["lista"]):
         z = x.split("*")
         z = z[0]
         if z == dato:
-            print("hola")
-            if lt.isPresent(lis, x) == 0:
-                print(x)
+            
+            hol=adj.adjacents(analyzer["connections"],x)
+            for i in lt.iterator(hol):
+                
+                i=i.split("*")
+                i=i[0]
+                datorr =m.get(analyzer["landing"],i)
+                valorr=me.getValue(datorr)
+                pos2l=float(valorr["elements"][0]["latitude"])
+                pos2la=float(valorr["elements"][0]["longitude"])
+                lp2=(valorr["elements"][0]["name"])
 
-                #lt.addLast(lis,x)
+
+                folium.Marker(
+                    location=[pos2l,pos2la],
+                    popup=lp2
+
     
-    #print(lis)
+                    ).add_to(ma)
+                aline=folium.PolyLine(locations=[(pos1l,pos1la),(pos2l,pos2la)],weight=2,color = 'blue')
+                ma.add_child(aline)
+
+
+           
+            if lt.isPresent(lis, x) == 0:
+
+                
+
+                lt.addLast(lis,x)
+
+    
+    
+    print("Landing point mas conectado  " +str(dato))
+    print("Total landing points cables conectado " +str(maxi))
+    print("Total paises conectados " +str(lt.size(lis)))
+    ma.save("Req2map.html")
     return dato
 
             
