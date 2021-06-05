@@ -435,6 +435,19 @@ def req4(analyzer):
    
  
    
+   graph= analyzer["connections"]
+   search = p.PrimMST(graph)
+   weight = p.weightMST(graph,search)
+   edges = p.edgesMST(graph,search)
+   print(edges["mst"])
+   """
+   for key in edges.keys():
+       print(key)
+   el dict tiene estas keys:
+   edgeTo, distTo, marked,pq, mst
+   
+   """
+   
 
    
    
