@@ -122,7 +122,10 @@ while True:
 
         
     elif int(inputs[0]) == 8:
-        pass
+        print("IP1: 165.132.67.69 \nIP2: 8.8.8.8")
+        ip_1 = input("Ingrese el nombre de la IP1: ")
+        ip_2 = input("Ingrese el nombre de la IP2: ")
+        result = controller.req7(cont,ip_1,ip_2)
     else:
         sys.exit(0)
 sys.exit(0)

@@ -47,9 +47,11 @@ from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import mergesort as mt
 from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import bellmanford as bel
 from DISClib.Utils import error as error
 assert config
-
+from ip2geotools.databases.noncommercial import DbIpCity
+import ipapi
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -144,11 +146,13 @@ def connect_capital(analyzer):
         if dato is not None:
             valor=me.getValue(dato)
             paisciudad=(valor["elements"][0]["name"])
+            
             latitudoriginal=(valor["elements"][0]["latitude"])
             longitudeoriginal=(valor["elements"][0]["longitude"])
             hola=paisciudad.split(",")
             hola=hola[-1]
-            hola=hola.replace(" ","")
+            hola=hola[1:]
+            
             value=m.get(analyzer["countries"],hola)
            
             if value is not None:
@@ -162,6 +166,7 @@ def connect_capital(analyzer):
                 longitud=haversine(origen,destino)
                 
                 if not (gr.containsVertex(analyzer["connections"],nombre)):
+                    
                     gr.insertVertex(analyzer["connections"],nombre)
                    
 
@@ -434,15 +439,94 @@ def req3(analyzer,lp1,lp2):
     pais1=m.get(analyzer["countries"],lp1)
     pais1=me.getValue(pais1)
     paisn1=(pais1["elements"][0]["CountryName"])+("-")+((pais1["elements"][0]["CountryCode"]))
+  
     pais2=m.get(analyzer["countries"],lp2)
     pais2=me.getValue(pais2)
     paisn2=(pais2["elements"][0]["CountryName"])+("-")+((pais2["elements"][0]["CountryCode"]))
-    print(paisn1)
-    print(paisn2)
+    
+    ma=folium.Map()
     
     valor = djk.Dijkstra(analyzer["connections"], paisn1)
     distancia_t =djk.distTo(valor, paisn2)
     ruta =djk.pathTo(valor, paisn2)
+    #grafica
+    for x in lt.iterator(ruta):
+     
+
+        if "*" in (x["vertexA"]):
+            ht=x["vertexA"]
+            ht=ht.split("*")
+            
+            nombre=ht[1]
+            ht=ht[0]
+            dato =m.get(analyzer["landing"],ht)
+            valor=me.getValue(dato)
+            pos1l=float(valor["elements"][0]["latitude"])
+            pos1la=float(valor["elements"][0]["longitude"])
+            folium.Marker(
+                location=[pos1l,pos1la],
+                popup=nombre
+    
+                ).add_to(ma)
+        else:
+
+                ht=x["vertexA"]
+                ht=ht.split("-")
+                nombre=ht[0]
+                ht=ht[0]
+                dato =m.get(analyzer["countries"],ht)
+                valor=me.getValue(dato)
+                pos1l=float(valor["elements"][0]["CapitalLatitude"])
+                pos1la=float(valor["elements"][0]["CapitalLongitude"])
+                folium.Marker(
+                    location=[pos1l,pos1la],
+                    popup=nombre
+        
+                    ).add_to(ma)
+
+
+        
+           
+
+        if "*" in (x["vertexB"]):
+            ht=x["vertexB"]
+            ht=ht.split("*")
+            nombre=ht[1]
+            ht=ht[0]
+            dato =m.get(analyzer["landing"],ht)
+            valor=me.getValue(dato)
+            pos2l=float(valor["elements"][0]["latitude"])
+            pos2la=float(valor["elements"][0]["longitude"])
+            folium.Marker(
+                location=[pos2l,pos2la],
+                popup=nombre
+    
+                ).add_to(ma)
+        else:
+
+            ht=x["vertexB"]
+            ht=ht.split("-")
+            nombre=ht[0]
+            ht=ht[0]
+            
+            dato =m.get(analyzer["countries"],ht)
+            
+
+            valor=me.getValue(dato)
+            pos2l=float(valor["elements"][0]["CapitalLatitude"])
+            pos2la=float(valor["elements"][0]["CapitalLongitude"])
+            folium.Marker(
+                    location=[pos2l,pos2la],
+                    popup=nombre
+        
+                    ).add_to(ma)
+        aline=folium.PolyLine(locations=[(pos1l,pos1la),(pos2l,pos2la)],weight=2,color = 'blue')
+        ma.add_child(aline)
+        ma.save("Req3map.html")
+
+        
+            
+
     
     return (distancia_t, ruta)
 
@@ -502,19 +586,110 @@ def req4(analyzer):
    print("Peso total : "+str(peso))
 
    print("Numeros de nodos conectados : "+str(gr.numVertices(grafo)))
+   print(len(lis))
+   cont=0
    max=0
-   conts = djk.Dijkstra(analyzer["connections"], ("19246*Negril*JSCFS"))
-   for x in (lis):
-       if (gr.containsVertex(grafo,x)):
-           if djk.hasPathTo(conts, x):
-                        distancia_t =djk.distTo(conts, (x))
-                        (distancia_t)
-                        if distancia_t > max :
-                            max=distancia_t
-                            importa=x
-                            grafoi=conts
+   for y in lis:
+        conts = djk.Dijkstra(analyzer["connections"],(y))
+        cont+=1
+        print(cont)
+       
+           
+      
+
+   
+        for x in (lis):
+                    if (gr.containsVertex(grafo,x)):
+                        if djk.hasPathTo(conts, x):
+                                        distancia_t =djk.distTo(conts, (x))
+                                        (distancia_t)
+                                        if distancia_t > max :
+                                            max=distancia_t
+                                            importa=x
+                                            grafoi=conts
+                                            eso=y
+                                    
+                                    
+   print(eso)
+   ma=folium.Map()
+
+
                             
-   print(djk.pathTo(grafoi, importa))
+   ruta=(djk.pathTo(grafoi, importa))
+   for x in lt.iterator(ruta):
+     
+
+        if "*" in (x["vertexA"]):
+            ht=x["vertexA"]
+            ht=ht.split("*")
+            
+            nombre=ht[1]
+            ht=ht[0]
+            dato =m.get(analyzer["landing"],ht)
+            valor=me.getValue(dato)
+            pos1l=float(valor["elements"][0]["latitude"])
+            pos1la=float(valor["elements"][0]["longitude"])
+            folium.Marker(
+                location=[pos1l,pos1la],
+                popup=nombre
+    
+                ).add_to(ma)
+        else:
+
+                ht=x["vertexA"]
+                ht=ht.split("-")
+                nombre=ht[0]
+                ht=ht[0]
+                dato =m.get(analyzer["countries"],ht)
+                valor=me.getValue(dato)
+                pos1l=float(valor["elements"][0]["CapitalLatitude"])
+                pos1la=float(valor["elements"][0]["CapitalLongitude"])
+                folium.Marker(
+                    location=[pos1l,pos1la],
+                    popup=nombre
+        
+                    ).add_to(ma)
+
+
+        
+           
+
+        if "*" in (x["vertexB"]):
+            ht=x["vertexB"]
+            ht=ht.split("*")
+            nombre=ht[1]
+            ht=ht[0]
+            dato =m.get(analyzer["landing"],ht)
+            valor=me.getValue(dato)
+            pos2l=float(valor["elements"][0]["latitude"])
+            pos2la=float(valor["elements"][0]["longitude"])
+            folium.Marker(
+                location=[pos2l,pos2la],
+                popup=nombre
+    
+                ).add_to(ma)
+        else:
+
+            ht=x["vertexB"]
+            ht=ht.split("-")
+            nombre=ht[0]
+            ht=ht[0]
+            
+            dato =m.get(analyzer["countries"],ht)
+            
+
+            valor=me.getValue(dato)
+            pos2l=float(valor["elements"][0]["CapitalLatitude"])
+            pos2la=float(valor["elements"][0]["CapitalLongitude"])
+            folium.Marker(
+                    location=[pos2l,pos2la],
+                    popup=nombre
+        
+                    ).add_to(ma)
+        aline=folium.PolyLine(locations=[(pos1l,pos1la),(pos2l,pos2la)],weight=2,color = 'blue')
+        ma.add_child(aline)
+        ma.save("Req4map.html")
+   print(ruta)
    
       
 #-------------------------------
@@ -639,6 +814,21 @@ def req6(analyzer, pais, cable):
             print(pais, ancho)
 
             
+#-------------------------------
+# REQUERIMIENTO 7
+#-------------------------------
+
+def req7(analyzer,ip_1,ip_2):
+    # Se utiliza la librería y encuentra países 
+    country_1 = ipapi.location(ip=ip_1,output='country_name')
+    country_2 = ipapi.location(ip=ip_2,output='country_name')
+    print(req3(analyzer,country_1,country_2))
+
+   
+
+    
+    
+                
 
             
 

@@ -236,7 +236,46 @@ def req5(cont, lp):
     return answer
 
 def req6(cont, pais, cable):
-    return (model.req6(cont,pais,cable))
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    # Función de carga 
+    answer= (model.req6(cont,pais,cable))
+    # toma de memoria 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    print("Tiempo [ms]: ",delta_time)
+    print("Memoria [kB]: ", delta_memory)
+    return answer
+
+def req7(cont, pais1, pais2):
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    # Función de carga
+    answer= (model.req7(cont,pais1,pais2))
+    # toma de memoria 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    print("Tiempo [ms]: ",delta_time)
+    print("Memoria [kB]: ", delta_memory)
+    return answer
 
 # Inicialización del Catálogo de libros
 
