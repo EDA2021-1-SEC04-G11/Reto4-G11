@@ -24,6 +24,7 @@
  * Dario Correal - Version inicial
  """
 
+from DISClib.Algorithms.Graphs.dfs import pathTo
 from folium.map import Icon
 from haversine import haversine, Unit
 import os 
@@ -589,33 +590,36 @@ def req4(analyzer):
    print(len(lis))
    cont=0
    max=0
-   for y in lis:
-        conts = djk.Dijkstra(analyzer["connections"],(y))
-        cont+=1
-        print(cont)
+   
+   conts = djk.Dijkstra(analyzer["connections"],("Liberia-LR"))
+        
+        
        
            
-      
-
-   
-        for x in (lis):
+   for x in (lis):
                     if (gr.containsVertex(grafo,x)):
                         if djk.hasPathTo(conts, x):
-                                        distancia_t =djk.distTo(conts, (x))
-                                        (distancia_t)
-                                        if distancia_t > max :
-                                            max=distancia_t
+                                        distancia_t =djk.pathTo(conts, (x))
+                                        jf=lt.size(distancia_t)
+                                        pjf=int(jf)
+                                        
+                                        
+                                        if pjf > max :
+                                            max=pjf
+                                           
                                             importa=x
                                             grafoi=conts
-                                            eso=y
+                                          
+                                           
                                     
                                     
-   print(eso)
+
    ma=folium.Map()
 
 
                             
    ruta=(djk.pathTo(grafoi, importa))
+  
    for x in lt.iterator(ruta):
      
 
@@ -690,6 +694,7 @@ def req4(analyzer):
         ma.add_child(aline)
         ma.save("Req4map.html")
    print(ruta)
+   
    
       
 #-------------------------------
