@@ -111,8 +111,16 @@ while True:
     elif int(inputs[0]) == 6:
         lp = input("Ingrese el landing point que le gustaría consultar")
         result = controller.req5(cont,lp)
+        print("Lista de países afectados:\n{}".format(result[0]))
+        print("Número de países {}".format(result[1]))
     elif int(inputs[0]) == 7:
-        pass
+        print("Probar con: \nCuba,ALBA-1")
+        pais = input("Ingrese el pais: ")
+        cable = input("Ingrese el cable: ")
+
+        result = controller.req6(cont,pais,cable)
+
+        
     elif int(inputs[0]) == 8:
         pass
     else:

@@ -24,6 +24,7 @@
  * Dario Correal - Version inicial
  """
 
+from folium.map import Icon
 from haversine import haversine, Unit
 import os 
 
@@ -36,6 +37,7 @@ import sys
 from DISClib.ADT import orderedmap as om
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import prim as p 
+from DISClib.Algorithms.Sorting import shellsort as s
 from DISClib.Algorithms.Graphs import bfs as b
 from DISClib.DataStructures import adjlist as adj 
 from DISClib.ADT.graph import gr
@@ -70,11 +72,15 @@ def newAnalyzer():
                     'landing': None,
                     'connections': None,
                     'countries':None,
-                    "lista":None
+                    "cable":None,
+                    "lista":None,
+                    "graph": None
                     }
 
         analyzer['landing'] = m.newMap(numelements=14000,
                                      maptype='PROBING')
+        analyzer['cable'] = m.newMap(numelements=14000,
+                                     maptype='PROBING')                             
         analyzer['countries'] = m.newMap(numelements=500,
                                      maptype='PROBING')
 
@@ -82,8 +88,12 @@ def newAnalyzer():
                                               directed=True,
                                               size=14000,
                                               comparefunction=compareStopIds)
+
+        
         analyzer["lista"] = lt.newList("ARRAY_LIST")
+        
         return analyzer
+
     except Exception as exp:
         error.reraise(exp, 'model:newAnalyzer')
 
@@ -167,6 +177,24 @@ def add_country(analyzer,service):
     artist_n=service["CountryName"].strip()
 
     artist = analyzer['countries']
+    moj= m.contains(artist,artist_n)
+    if moj:
+        valoactual = m.get(artist,artist_n) 
+        valor = me.getValue(valoactual)
+    else:
+        m.put(artist,artist_n,lt.newList("ARRAY_LIST"))
+        pays = m.get(artist,artist_n)
+        valor= me.getValue(pays)
+    
+    lt.addLast(valor,service)
+
+
+
+def add_cable(analyzer,service):
+    
+    artist_n=service["cable_name"].strip()
+
+    artist = analyzer['cable']
     moj= m.contains(artist,artist_n)
     if moj:
         valoactual = m.get(artist,artist_n) 
@@ -427,31 +455,68 @@ def req3(analyzer,lp1,lp2):
 #-------------------------------
 
 def req4(analyzer):
-   
+   """
+   Debe retornar el número de nodos, el costo total, conexión más larga, conexión más corta 
+   edgeTo: key: Vértices, Valores: nodos a los que se conecta 
+
+   """
+   lis=[]
    v= '5779*Paddington*Australia-Japan Cable (AJC)'
    h = b.BreadhtFisrtSearch(analyzer["connections"],'10383*Iskele*Turcyos-2')
-   pedo=p.PrimMST(analyzer["connections"])
-   print(pedo)
    
- 
    
+   grafo = gr.newGraph(datastructure='ADJ_LIST',
+                                              directed=False,
+                                              size=50,
+                                              comparefunction=compareStopIds)
+   
+   listacero=[]
    graph= analyzer["connections"]
    search = p.PrimMST(graph)
-   weight = p.weightMST(graph,search)
-   edges = p.edgesMST(graph,search)
-   print(edges["mst"])
-   """
-   for key in edges.keys():
-       print(key)
-   el dict tiene estas keys:
-   edgeTo, distTo, marked,pq, mst
+   vert=(search["distTo"])
+   keys=m.keySet(vert)
+   for x in lt.iterator(keys):
+       dat=m.get(vert,x)
+       if dat["value"] == 0.0:
+           listacero.append(dat["key"])
    
-   """
    
+   
+   arbol=(search["edgeTo"])
+   
+   valor=m.valueSet(arbol)
+   for x in lt.iterator(valor):
+       if not (gr.containsVertex(grafo,x["vertexA"])):
+           
+           gr.insertVertex(grafo,x["vertexA"])
+           lis.append(x["vertexA"])
+           
+       if not (gr.containsVertex(grafo,x["vertexB"])):
+           gr.insertVertex(grafo,x["vertexB"])
+           lis.append(x["vertexB"])
+           
+       gr.addEdge(grafo,x["vertexA"],x["vertexB"],x["weight"])
+       gr.addEdge(grafo,x["vertexB"],x["vertexA"],x["weight"])
 
+   peso=p.weightMST(graph,search)
+   print("Peso total : "+str(peso))
+
+   print("Numeros de nodos conectados : "+str(gr.numVertices(grafo)))
+   max=0
+   conts = djk.Dijkstra(analyzer["connections"], ("19246*Negril*JSCFS"))
+   for x in (lis):
+       if (gr.containsVertex(grafo,x)):
+           if djk.hasPathTo(conts, x):
+                        distancia_t =djk.distTo(conts, (x))
+                        (distancia_t)
+                        if distancia_t > max :
+                            max=distancia_t
+                            importa=x
+                            grafoi=conts
+                            
+   print(djk.pathTo(grafoi, importa))
    
-   
-   
+      
 #-------------------------------
 # REQUERIMIENTO 5
 #-------------------------------
@@ -460,7 +525,7 @@ def req4(analyzer):
 def req5(analyzer, lp):
     lista=[]
     lis = lt.newList()
-    listad=[]
+    listad=lt.newList()
 
     for x  in lt.iterator(analyzer["lista"]):
         if lp in x :
@@ -469,29 +534,125 @@ def req5(analyzer, lp):
             
             dato=x.split("*")
             dato=dato[0]
+            va=m.get(analyzer["landing"],dato)
+            da=me.getValue(va)
+            name=(da["elements"][0]["name"])
+            lt1=float(da["elements"][0]["latitude"])
+            lpt1=float(da["elements"][0]["longitude"])
+            ma=folium.Map()
+            folium.CircleMarker(
+                radius=(25),
+                location=[lt1,lpt1],
+                popup=name,
+                color="#a83a32",
+                fill_color="#a83a32"
+                
+
+    
+                ).add_to(ma)
+            
             hol=adj.adjacents(analyzer["connections"],x)
             for i in lt.iterator(hol):
                 if lt.isPresent(lis, i) == 0:
                     lt.addLast(lis,i)
-    print(lista)
+  
     for y in range(0,len(lista)):
 
          for x in lt.iterator(lis):
         
             peso=gr.getEdge(analyzer["connections"],lista[y],x)
             if peso is not None :
-                if not x in listad:
-                    listad.append(x)
-                    print(peso)
+                dis=peso["weight"]
+                peso=peso["vertexB"]
+                
+                if "*" in peso:
+                    peso=peso.split("*")
+                    peso=peso[0]
+                    valor=m.get(analyzer["landing"],peso)
+                    dato=me.getValue(valor)
+                    peso=(dato["elements"][0]["name"])
+                    lt2=float(dato["elements"][0]["latitude"])
+                    lpt2=float(dato["elements"][0]["longitude"])
+                    
+                    folium.Marker(
+                        location=[lt2,lpt2],
+                        popup=peso
+
+    
+                        ).add_to(ma)
+                    
+                    aline=folium.PolyLine(locations=[(lt1,lpt1),(lt2,lpt2)],weight=2,color = 'blue')
+                    ma.add_child(aline)
+                
+                
 
 
-    print(len(listad))
+                    if lt.isPresent(listad, (peso,dis)) == 0:   
+                        lt.addLast(listad,(peso,dis))
+
+    s.sort(listad,cmpdistance)
+    ma.save("Req5map.html")
+    
+    return (listad,lt.size(listad))
             
         
 
+#-------------------------------
+# REQUERIMIENTO 6
+#-------------------------------
+
+def req6(analyzer, pais, cable):
+    lis=lt.newList()
+    las=lt.newList()
+    for y  in lt.iterator(analyzer["lista"]):
+        if cable in y:
+            cabled=y.split("*")
+            cabled=cabled[0]
+            valor=m.get(analyzer["landing"],cabled)
+            dato=me.getValue(valor)
+            lt2=(dato["elements"][0]["name"])
+            if pais in lt2:
+                lt.addLast(lis,y)
+    for x in lt.iterator(lis):
+        adya=gr.adjacents(analyzer["connections"],x)
+        for y in lt.iterator(adya):
+            if lt.isPresent(las, y) == 0:
+                lt.addLast(las,y)
+    anchodebanda=valor=m.get(analyzer["cable"],cable)
+    anchodebanda=me.getValue(anchodebanda)
+    anchodebanda=anchodebanda["elements"][0]["capacityTBPS"]
+    for x in lt.iterator(las):
+        if  ("*") in x:
+            dato=x.split("*")
+            dato=dato[0]
+            valor=m.get(analyzer["landing"],dato)
+            va=me.getValue(valor)
+            pais=va["elements"][0]["name"] 
+            pais=pais.split(",")
+            pais=pais[1]
+            pais=pais.replace(" ","")
+            value=m.get(analyzer["countries"],pais)
+            
+            v=me.getValue(value)
+            velo=v["elements"][0]["Internet users"]
+            ancho=(float(anchodebanda))/(float(velo))
+            print(pais, ancho)
 
             
 
+            
+
+    
+    
+
+
+            
+
+                
+
+
+
+    
             
 
     
@@ -530,6 +691,9 @@ def compareroutes(route1, route2):
         return 1
     else:
         return -1
+
+def cmpdistance(route1,route2):
+    return (float(route1[1])) > (float(route2[1]))
 
 # ==============================
 # Funciones de impresión 

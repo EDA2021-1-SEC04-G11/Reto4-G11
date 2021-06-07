@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<head>    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_a2a13e097b8142a6a3ecc3664b8c2aa9 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+            </style>
+        
+</head>
+<body>    
+    
+            <div class="folium-map" id="map_a2a13e097b8142a6a3ecc3664b8c2aa9" ></div>
+        
+</body>
+<script>    
+    
+            var map_a2a13e097b8142a6a3ecc3664b8c2aa9 = L.map(
+                "map_a2a13e097b8142a6a3ecc3664b8c2aa9",
+                {
+                    center: [0, 0],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 1,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_ed27f2e3eb8c48db9997b175ee009d4a = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            ).addTo(map_a2a13e097b8142a6a3ecc3664b8c2aa9);
+        
+    
+            var circle_marker_1f4a685c0cbf49f6a92f2ae90e2599dc = L.circleMarker(
+                [-33.882123, 151.228678],
+                {"bubblingMouseEvents": true, "color": "#a83a32", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#a83a32", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 25, "stroke": true, "weight": 3}
+            ).addTo(map_a2a13e097b8142a6a3ecc3664b8c2aa9);
+        
+    
+        var popup_eaf01c1d6ff8453289acb5791f0b1b3b = L.popup({"maxWidth": "100%"});
+
+        
+            var html_c4e590e3f0f9498caf15d8f72b1bbe7b = $(`<div id="html_c4e590e3f0f9498caf15d8f72b1bbe7b" style="width: 100.0%; height: 100.0%;">Paddington, New South Wales, Australia</div>`)[0];
+            popup_eaf01c1d6ff8453289acb5791f0b1b3b.setContent(html_c4e590e3f0f9498caf15d8f72b1bbe7b);
+        
+
+        circle_marker_1f4a685c0cbf49f6a92f2ae90e2599dc.bindPopup(popup_eaf01c1d6ff8453289acb5791f0b1b3b)
+        ;
+
+        
+    
+    
+            var marker_30d46b5c3ece49c585a7e31a1bcc92d2 = L.marker(
+                [-33.737386, 151.245084],
+                {}
+            ).addTo(map_a2a13e097b8142a6a3ecc3664b8c2aa9);
+        
+    
+        var popup_dcfccf6ede5144318c62ea06f8457e4d = L.popup({"maxWidth": "100%"});
+
+        
+            var html_efc8272be7784ef2bce0fec047ce84d6 = $(`<div id="html_efc8272be7784ef2bce0fec047ce84d6" style="width: 100.0%; height: 100.0%;">Oxford Falls, Australia</div>`)[0];
+            popup_dcfccf6ede5144318c62ea06f8457e4d.setContent(html_efc8272be7784ef2bce0fec047ce84d6);
+        
+
+        marker_30d46b5c3ece49c585a7e31a1bcc92d2.bindPopup(popup_dcfccf6ede5144318c62ea06f8457e4d)
+        ;
+
+        
+    
+    
+            var poly_line_2a19d5b97dfa4b94a4e83e89c771d4b5 = L.polyline(
+                [[-33.882123, 151.228678], [-33.737386, 151.245084]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_a2a13e097b8142a6a3ecc3664b8c2aa9);
+        
+    
+            var marker_7c2e9100726d4803a559771a2873c483 = L.marker(
+                [34.336891, 136.874294],
+                {}
+            ).addTo(map_a2a13e097b8142a6a3ecc3664b8c2aa9);
+        
+    
+        var popup_3b993667d64e4e069632b8a06b553548 = L.popup({"maxWidth": "100%"});
+
+        
+            var html_870dc921a3ef44c6ac9790e3b9e2f9d5 = $(`<div id="html_870dc921a3ef44c6ac9790e3b9e2f9d5" style="width: 100.0%; height: 100.0%;">Shima, Japan</div>`)[0];
+            popup_3b993667d64e4e069632b8a06b553548.setContent(html_870dc921a3ef44c6ac9790e3b9e2f9d5);
+        
+
+        marker_7c2e9100726d4803a559771a2873c483.bindPopup(popup_3b993667d64e4e069632b8a06b553548)
+        ;
+
+        
+    
+    
+            var poly_line_67b6f3a3df1e46938c6500e4fa0a55bb = L.polyline(
+                [[-33.882123, 151.228678], [34.336891, 136.874294]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_a2a13e097b8142a6a3ecc3664b8c2aa9);
+        
+    
+            var marker_4759711dba484775b0dee266020665a6 = L.marker(
+                [21.548769, -158.242038],
+                {}
+            ).addTo(map_a2a13e097b8142a6a3ecc3664b8c2aa9);
+        
+    
+        var popup_d09203355f25485fb61c583ff7955cea = L.popup({"maxWidth": "100%"});
+
+        
+            var html_ce6e7740a3424e20a23463e04a5d4045 = $(`<div id="html_ce6e7740a3424e20a23463e04a5d4045" style="width: 100.0%; height: 100.0%;">Keawaula, HI, United States</div>`)[0];
+            popup_d09203355f25485fb61c583ff7955cea.setContent(html_ce6e7740a3424e20a23463e04a5d4045);
+        
+
+        marker_4759711dba484775b0dee266020665a6.bindPopup(popup_d09203355f25485fb61c583ff7955cea)
+        ;
+
+        
+    
+    
+            var poly_line_b79ed5961645405c8a736ee5d9cf5988 = L.polyline(
+                [[-33.882123, 151.228678], [21.548769, -158.242038]],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 2}
+            ).addTo(map_a2a13e097b8142a6a3ecc3664b8c2aa9);
+        
+</script>

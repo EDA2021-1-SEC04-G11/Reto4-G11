@@ -66,12 +66,13 @@ def loadServices(analyzer):
     for service in input_file:
         
         service["origin"]=service.pop('\ufefforigin')
-        service["cable_length"] = service["cable_length"].replace(" km","").replace(",",".")
+        service["cable_length"] = service["cable_length"].replace(" km","").replace(",","")
         
         if service['cable_length'] == 'n.a.':
             service['cable_length'] = 0
     
         model.cargar_grafos(analyzer, service)
+        model.add_cable(analyzer,service)
     
     #model.addRouteConnections(analyzer)
 
@@ -126,16 +127,116 @@ def totalConnections(analyzer):
     return model.totalConnections(analyzer)
 
 def req1(cont,lp1,lp2):
-    return model.req1(cont,lp1,lp2)
+    # Funciones Iniciales de tiempo y memoria 
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    # Función de carga 
+    answer = model.req1(cont,lp1,lp2)
+    # toma de memoria 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    print("Tiempo [ms]: ",delta_time)
+    print("Memoria [kB]: ", delta_memory)
+    return answer
 def req2(cont):
-    return model.req2(cont)
+    # Funciones Iniciales de tiempo y memoria 
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    # Función de carga 
+    answer= model.req2(cont)
+    # toma de memoria 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    print("Tiempo [ms]: ",delta_time)
+    print("Memoria [kB]: ", delta_memory)
+    return answer
 
 def req3(analyzer,lp1,lp2):
-    return model.req3(analyzer,lp1,lp2)
+    # Funciones Iniciales de tiempo y memoria 
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    # Función de carga 
+    answer= model.req3(analyzer,lp1,lp2)
+    # toma de memoria 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    print("Tiempo [ms]: ",delta_time)
+    print("Memoria [kB]: ", delta_memory)
+    return answer
+
 def req4(cont):
-    return model.req4(cont)
+    # Funciones Iniciales de tiempo y memoria 
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    # Función de carga 
+    answer= model.req4(cont)
+    # toma de memoria 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    print("Tiempo [ms]: ",delta_time)
+    print("Memoria [kB]: ", delta_memory)
+    return answer
+
 def req5(cont, lp):
-    return model.req5(cont,lp)
+    # Funciones Iniciales de tiempo y memoria 
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    # Función de carga 
+    answer= model.req5(cont,lp)
+    # toma de memoria 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+
+    print("Tiempo [ms]: ",delta_time)
+    print("Memoria [kB]: ", delta_memory)
+    return answer
+
+def req6(cont, pais, cable):
+    return (model.req6(cont,pais,cable))
 
 # Inicialización del Catálogo de libros
 
@@ -155,3 +256,37 @@ def last_country(analyzer):
 
 def first_lp(analyzer):
     return model.first_lp(analyzer)
+
+# ======================================
+# Funciones para medir tiempo y memoria
+# ======================================
+
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory
